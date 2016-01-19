@@ -1,0 +1,18 @@
+body{
+  color:black;
+}
+#toc, #burger{
+  display:none;
+}
+#content{
+  padding:0px 25px 10px 25px;
+  border:none;
+}
+h1{
+  margin: 0px -25px 0px -25px;
+}
+@page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+    padding: 0;
+}

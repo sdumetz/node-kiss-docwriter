@@ -1,0 +1,40 @@
+{
+  "name": "kiss-docwriter",
+  "version": "0.0.1",
+  "description": "keep it simple : document writer",
+  "main": "bundle.js",
+  "scripts": {
+    "start": "webpack-dev-server --progress --colors",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "prismjs": "^1.3.0",
+    "marked": "^0.3.5"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "exports-loader": "^0.6.2",
+    "http-server": "^0.8.5",
+    "webpack": "^1.12.11",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdumetz/node-kiss-docwriter.git"
+  },
+  "keywords": [
+    "kiss",
+    "document",
+    "office",
+    "writer",
+    "markdown",
+    "wiki"
+  ],
+  "author": "Sebastien DUMETZ <s.dumetz@holusion.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/sdumetz/node-kiss-docwriter/issues"
+  },
+  "homepage": "https://github.com/sdumetz/node-kiss-docwriter#readme"
+}
