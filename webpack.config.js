@@ -4,6 +4,8 @@ module.exports = {
   entry: './lib/index.js',
   output: {
     filename: 'bundle.js',
+    libraryTarget: "var",
+    library: "Kiss",
     path: __dirname
   },
   devtool: 'source-map',
