@@ -1,3 +1,4 @@
+var Kiss =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,9 +47,9 @@
 
 	'use strict';
 	
-	var _MarkdownRenderer = __webpack_require__(1);
+	var _Engine = __webpack_require__(1);
 	
-	var _MarkdownRenderer2 = _interopRequireDefault(_MarkdownRenderer);
+	var _Engine2 = _interopRequireDefault(_Engine);
 	
 	var _StyleSet = __webpack_require__(2);
 	
@@ -56,7 +57,12 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = { Styleset: _StyleSet2.default, MarkdownRenderer: _MarkdownRenderer2.default };
+	function Kiss(datasrc, opts) {
+	  this.styleset = new _StyleSet2.default(opts);
+	  this.engine = new _Engine2.default(this.styleset, datasrc);
+	}
+	
+	module.exports = Kiss;
 
 /***/ },
 /* 1 */
@@ -64,15 +70,19 @@
 
 	'use strict';
 	
-	function MarkdownRenderer(styleset) {
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	function Engine(styleset, datasrc) {
 	  this.styleset = styleset;
-	  this.asyncLoad("toc.json").then(JSON.parse).then(this.renderToc.bind(this), function (e) {
-	    throw e;
+	
+	  ((typeof datasrc === 'undefined' ? 'undefined' : _typeof(datasrc)) === "object" ? Promise.resolve(datasrc) : this.asyncLoad(datasrc).then(JSON.parse)).then(this.renderToc.bind(this), function (e) {
+	    throw e.stack;
 	  });
+	
 	  window.onhashchange = this.hashChanged.bind(this);
 	  this.hashChanged();
 	}
-	MarkdownRenderer.prototype.asyncLoad = function (uri) {
+	Engine.prototype.asyncLoad = function (uri) {
 	  return new Promise(function (resolve, reject) {
 	    var req = new XMLHttpRequest();
 	    req.open('GET', uri, true);
@@ -94,7 +104,7 @@
 	    req.send(null);
 	  });
 	};
-	MarkdownRenderer.prototype.renderToc = function (data) {
+	Engine.prototype.renderToc = function (data) {
 	  var _this = this;
 	
 	  if (!Array.isArray(data)) return console.warn("TOC data is not an array : ", data);
@@ -105,32 +115,32 @@
 	    return ul;
 	  }, document.createElement("UL")));
 	};
-	MarkdownRenderer.prototype.makeTocElement = function (el) {
+	Engine.prototype.makeTocElement = function (el) {
 	  var li = document.createElement("LI");
 	  li.innerHTML = "<a href=\"#" + encodeURIComponent(el.path) + "\">" + el.name + "</a>";
 	  return li;
 	};
-	MarkdownRenderer.prototype.hashChanged = function () {
+	Engine.prototype.hashChanged = function () {
 	  var _this2 = this;
 	
 	  var hash = decodeURIComponent(location.hash.slice(1));
 	  if (!hash) return;
-	  this.asyncLoad("data/" + hash).then(this.renderMarkup.bind(this)).then(function (rawhtml) {
-	    _this2.styleset.container.innerHTML = rawhtml;
+	  this.asyncLoad(hash).then(this.renderMarkup.bind(this)).then(function (rawhtml) {
+	    _this2.styleset.content.innerHTML = rawhtml;
 	    _this2.renderTitle(hash);
 	  }).catch(function (e) {
 	    throw e;
 	  });
 	};
 	
-	MarkdownRenderer.prototype.renderTitle = function (hash) {
+	Engine.prototype.renderTitle = function (hash) {
 	  document.getElementById("render-date").innerHTML = new Date().toDateString();
 	  document.getElementsByTagName("TITLE")[0].innerHTML = hash;
 	};
-	MarkdownRenderer.prototype.renderMarkup = function (text) {
+	Engine.prototype.renderMarkup = function (text) {
 	  return this.styleset.render(text);
 	};
-	module.exports = MarkdownRenderer;
+	module.exports = Engine;
 
 /***/ },
 /* 2 */
@@ -145,13 +155,19 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function StyleSet(opts) {
-	  this.renderer = new _marked2.default.Renderer();
+	  var renderer = new _marked2.default.Renderer();
+	  opts = opts || {};
+	  if (opts.renderer && !opts.renderer instanceof _marked2.default.Renderer) {
+	    Object.keys(opts.renderer).forEach(function (key) {
+	      renderer[key] = opts.renderer[key];
+	    });
+	    opts.renderer = renderer;
+	  }
+	  this.setOptions(opts);
 	  this.layout();
 	}
-	StyleSet.prototype.getRenderer = function () {
-	  return this.renderer;
-	};
-	StyleSet.prototype.markedOptions = function (opts) {
+	
+	StyleSet.prototype.setOptions = function (opts) {
 	  _marked2.default.setOptions(opts);
 	};
 	StyleSet.prototype.layout = function () {
