@@ -4,6 +4,7 @@
   "description": "keep it simple : document writer",
   "main": "bundle.js",
   "scripts": {
+    "webpack":"webpack --progress --colors ",
     "start": "webpack-dev-server --progress --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
